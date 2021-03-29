@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .compelated span {
+      text-decoration: line-through;
+    }
+
+    ul[data-show="active"] li.compelated {
+      display: none;
+    }
+
+    ul[data-show="compelated"] li:not(.compelated) {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div>
+      <input type="checkbox" id="select-all">
+      <input type="text" id="todo-input">
+    </div>
+    <div>
+      <ul id="  -list"></ul>
+    </div>
+    <div>
+      <span><span id="count"></span>item left</span>
+      <span>
+        <label><input type="radio" onclick="todoList.dataset.show='all'" checked name="categary">All</label>
+        <label><input type="radio" onclick="todoList.dataset.show='compelated'" name="categary">Compelated</label>
+        <label><input type="radio" onclick="todoList.dataset.show='active'" name="categary">Active</label>
+      </span>
+      <button style="display:none;" id="clear">Clear</button>
+    </div>
+  </div>
+  <script>
+    var selectAll = document.querySelector('#select-all')
+    var todoInput = document.querySelector('#todo-input')
+    var todoList = document.querySelector('#todo-list')
+    var countSpan = document.querySelector('#count')
+    var Clear = document.querySelector('#clear')
+
+    var counter = 0
+    countSpan.textContent = counter
+
+    function IsAllChecked(inputs) {
+      return Array.from(inputs).every(it => it.checked)
+    }
+    todoInput.addEventListener('keyup', e => {
+
+      if (e.keyCode != 13) {
+        return
+      }
+      var todoContent = todoInput.value.trim()
+      if (todoContent) {
+        counter++
+        countSpan.textContent = counter
+        if (countSpan.textContent < todoList.children.length) {
+          Clear.style.display = ''
+        }  else {
+          Clear.style.display = 'none'
+        }
+
+        todoInput.value = ''
+        var li = document.createElement('li')
+
+        var check = document.createElement('input')
+        check.type = 'checkbox'
+        selectAll.checked = false
+        check.onchange = function () {
+          if (check.checked) {
+            li.classList.add('compelated')
+            counter--
+            countSpan.textContent = counter
+            if (countSpan.textContent < todoList.children.length) {
+              Clear.style.display = ''
+            }  else {
+              Clear.style.display = 'none'
+            }
+
+          } else {
+            li.classList.remove('compelated')
+            counter++
+            countSpan.textContent = counter
+            if (countSpan.textContent < todoList.children.length) {
+              Clear.style.display = ''
+            }  else {
+              Clear.style.display = 'none'
+            }
+
+          }
+          if (IsAllChecked(document.querySelectorAll('li>input[type="checkbox"]'))) {
+            selectAll.checked = true
+          } else {
+            selectAll.checked = false
+          }
+        }
+        li.append(check)
+
+        var inputSpan = document.createElement('span')
+        inputSpan.textContent = todoContent
+        inputSpan.ondblclick = function () {
+          inputSpan.style.display = 'none'
+          editBox.style.display = ''
+          editBox.focus()
+        }
+        li.append(inputSpan)
+
+        var editBox = document.createElement('input')
+        var mid = 0
+        editBox.value = todoContent
+        editBox.style.display = 'none'
+        editBox.onblur = function () {
+          if(mid = -1) {
+            return
+          }
+          inputSpan.textContent = editBox.value
+          editBox.style.display = 'none'
+          inputSpan.style.display = ''
+        }
+        editBox.addEventListener('keyup', e => {
+          if (e.keyCode == 13) {
+            inputSpan.textContent = editBox.value
+            editBox.style.display = 'none'
+            inputSpan.style.display = ''
+          }
+        })
+        editBox.addEventListener('keyup', e => {
+          if (e.keyCode == 27) {
+            editBox.style.display = 'none'
+            inputSpan.style.display = ''
+            mid = -1
+          }
+        })
+        li.append(editBox)
+
+        var deleteBox = document.createElement('button')
+        deleteBox.textContent = 'x'
+        // deleteBox.addEventListener('click',e => {
+        //   li.remove()
+        // })
+        deleteBox.onclick = function () {
+          if (li.classList.contains('compelated')) {
+            counter--
+            countSpan.textContent = counter
+            if (countSpan.textContent < todoList.children.length) {
+              Clear.style.display = ''
+            } else {
+              Clear.style.display = 'none'
+            }
+
+          }
+          li.remove()
+        }
+        li.append(deleteBox)
+
+        todoList.append(li)
+      }
+    })
+    selectAll.addEventListener('change', e => {
+      if (selectAll.checked) {
+        document.querySelectorAll('li > input:first-child:not(:checked)').forEach(it => {
+          it.click()
+        })
+      } else {
+        document.querySelectorAll('li > input:first-child:checked').forEach(it => {
+          it.click()
+        })
+      }
+    })
+  </script>
+</body>
+
+</html>
