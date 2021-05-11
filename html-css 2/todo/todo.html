@@ -28,14 +28,14 @@
       <input type="text" id="todo-input">
     </div>
     <div>
-      <ul id="  -list"></ul>
+      <ul id="todo-list"></ul>
     </div>
     <div>
       <span><span id="count"></span>item left</span>
       <span>
-        <label><input type="radio" onclick="todoList.dataset.show='all'" checked name="categary">All</label>
-        <label><input type="radio" onclick="todoList.dataset.show='compelated'" name="categary">Compelated</label>
-        <label><input type="radio" onclick="todoList.dataset.show='active'" name="categary">Active</label>
+        <label><input type="radio" onclick="todoList.dataset.showId='all'" checked name="categary">All</label>
+        <label><input type="radio" onclick="todoList.dataset.showId='compelated'" name="categary">Compelated</label>
+        <label><input type="radio" onclick="todoList.dataset.showId='active'" name="categary">Active</label>
       </span>
       <button style="display:none;" id="clear">Clear</button>
     </div>
@@ -118,9 +118,6 @@
         editBox.value = todoContent
         editBox.style.display = 'none'
         editBox.onblur = function () {
-          if(mid = -1) {
-            return
-          }
           inputSpan.textContent = editBox.value
           editBox.style.display = 'none'
           inputSpan.style.display = ''
@@ -136,7 +133,7 @@
           if (e.keyCode == 27) {
             editBox.style.display = 'none'
             inputSpan.style.display = ''
-            mid = -1
+            
           }
         })
         li.append(editBox)
